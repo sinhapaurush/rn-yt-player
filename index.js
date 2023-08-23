@@ -1,6 +1,6 @@
 import React, { useRef, useState, memo } from 'react';
 import WebView from 'react-native-webview';
-import {View, ActivityIndicator, StyleSheet} from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 const YouTubePlayer = memo(
     ({
@@ -46,23 +46,26 @@ const YouTubePlayer = memo(
         const YT_URL = `https://www.youtube.com/embed/${vidId}?start=${startDuration}${autoPlay === true ? '&autoplay=1' : ''}`;
         function removeBranding() {
             const JAVASCRIPT_TO_BE_EXECUTED = `
-            ${hideCards === true ? `document.querySelector(".ytp-cards-teaser").remove();` : ''}
+            const removeThisElementBuddy = (selector) =>{
+                document.querySelectorAll(selector).forEach(e=>e.remove());
+            };
+            ${hideCards === true ? `removeThisElementBuddy(".ytp-cards-teaser");` : ''}
       ${hideTopBar === true
-                    ? `document.querySelector(".ytp-chrome-top").remove();`
+                    ? `removeThisElementBuddy(".ytp-chrome-top");`
                     : ``
                 }
       document.querySelector(".ytp-gradient-top").remove();
       ${hideYTLogo === true
-                    ? `document.querySelectorAll("a").forEach(element=>element.remove());`
+                    ? `removeThisElementBuddy("a");`
                     : ``
                 }
       ${hideControls
-                    ? `document.querySelector(".ytp-chrome-bottom").remove();document.querySelector(".ytp-gradient-bottom").remove();`
+                    ? `removeThisElementBuddy(".ytp-chrome-bottom");removeThisElementBuddy(".ytp-gradient-bottom");`
                     : ``
                 }
-                document.querySelector("watch-again-on-youtube-endscreen").remove();
+                removeThisElementBuddy("watch-again-on-youtube-endscreen");
       const style = document.createElement('style');
-      style.innerHTML = \`.watch-again-on-youtube-endscreen{display:none!important;}
+      style.innerHTML = \`.ytp-endscreen-previous, .ytp-endscreen-next{display:none!important;}.watch-again-on-youtube-endscreen{display:none!important;}
       ${hideCards === true ? `.ytp-cards-teaser{display:none!important;}` : ''}${hideControls
                     ? `.ytp-chrome-bottom, .ytp-gradient-bottom{display:none!important;}`
                     : ``

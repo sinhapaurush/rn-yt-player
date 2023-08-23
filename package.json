@@ -1,6 +1,6 @@
 {
   "name": "rn-yt-player",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A package for React Native to embed YouTube video in React Native app without pain. It customizable, so that you can embed secure videos with it.",
   "main": "index.js",
   "scripts": {
@@ -26,10 +26,5 @@
   "bugs": {
     "url": "https://github.com/sinhapaurush/rn-yt-player/issues"
   },
-  "homepage": "https://github.com/sinhapaurush/rn-yt-player#readme",
-  "peerDependencies": {
-    "react": "^16.8.0",
-    "react-native": "^0.72.0",
-    "react-native-webview": "^13.3.1"
-  }
+  "homepage": "https://github.com/sinhapaurush/rn-yt-player#readme"
 }
