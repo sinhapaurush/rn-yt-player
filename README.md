@@ -7,7 +7,7 @@ Developers can easily modify the player according to their app (till an extent),
 
 ## Installation
 ```bash
-npm install rn-yt-player
+npm install rn-yt-player react-native-webview
 ```
 Under the hood this package works with [`react-native-webview`](https://www.npmjs.com/package/react-native-webview), ie make sure that it is also installed.
 ## Usage
