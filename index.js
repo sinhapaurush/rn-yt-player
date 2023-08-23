@@ -1,14 +1,11 @@
 import React, { useRef, useState, memo } from 'react';
 import WebView from 'react-native-webview';
-import {
-    View,
-    ActivityIndicator,
-    StyleSheet,
-} from 'react-native';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 
 const YouTubePlayer = memo(
     ({
         accentColor,
+        hideCards,
         videoSource,
         startVideoFrom,
         innerPlayButtonColor,
@@ -22,6 +19,8 @@ const YouTubePlayer = memo(
         height,
         children,
         loaderContainerStyle,
+        autoPlay,
+        onError
     }) => {
         const [videoLoaded, setVideoLoaded] = useState(false);
         const themeColor = accentColor || '#FFFFFF';
@@ -31,6 +30,7 @@ const YouTubePlayer = memo(
         height = height || 200;
         const PLAYER_DIMMENSIONS = { width: width, height: height };
         const LOADER_OVERLAYER_STYLE = { marginTop: -1 * height };
+        videoSource = videoSource || '_CuSlwOmDOo';
         let vidId = '';
         if (videoSource.indexOf('youtu.be') !== -1) {
             vidId = videoSource.split('.be/')[1];
@@ -43,10 +43,10 @@ const YouTubePlayer = memo(
             vidId = videoSource;
         }
 
-        const YT_URL = `https://www.youtube.com/embed/${vidId || 'YIU-7ZesjTU'
-            }?start=${startDuration}`;
+        const YT_URL = `https://www.youtube.com/embed/${vidId}?start=${startDuration}${autoPlay === true ? '&autoplay=1' : ''}`;
         function removeBranding() {
             const JAVASCRIPT_TO_BE_EXECUTED = `
+            ${hideCards === true ? `document.querySelector(".ytp-cards-teaser").remove();` : ''}
       ${hideTopBar === true
                     ? `document.querySelector(".ytp-chrome-top").remove();`
                     : ``
@@ -60,8 +60,10 @@ const YouTubePlayer = memo(
                     ? `document.querySelector(".ytp-chrome-bottom").remove();document.querySelector(".ytp-gradient-bottom").remove();`
                     : ``
                 }
+                document.querySelector("watch-again-on-youtube-endscreen").remove();
       const style = document.createElement('style');
-      style.innerHTML = \`${hideControls
+      style.innerHTML = \`.watch-again-on-youtube-endscreen{display:none!important;}
+      ${hideCards === true ? `.ytp-cards-teaser{display:none!important;}` : ''}${hideControls
                     ? `.ytp-chrome-bottom, .ytp-gradient-bottom{display:none!important;}`
                     : ``
                 }${hideCaptionButton
@@ -99,8 +101,11 @@ const YouTubePlayer = memo(
                 webRef.current.goBack();
             }
         }
+        function onErrorMethod() {
+            onError();
+        }
         return (
-            <>
+            <View style={PLAYER_DIMMENSIONS}>
                 <WebView
                     ref={webRef}
                     source={{ uri: YT_URL }}
@@ -109,6 +114,7 @@ const YouTubePlayer = memo(
                     onLoadStart={checkProgress}
                     onMessage={handleMessage}
                     allowsFullscreenVideo={true}
+                    onError={onErrorMethod}
                     setBuiltInZoomControls={false}
                     scrollEnabled={false}
                     showsVerticalScrollIndicator={false}
@@ -135,7 +141,7 @@ const YouTubePlayer = memo(
                         </View>
                     )
                 ) : null}
-            </>
+            </View>
         );
     },
 );
